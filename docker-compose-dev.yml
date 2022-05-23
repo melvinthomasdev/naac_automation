@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  db:
+    container_name: naac_dev_db
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/naac_dev_data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POTGRES_PASSWORD=postgres
+      - POSTGRES_DB=naac_db
+  
+  web:
+    container_name: naac_dev_web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python3 manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    restart: unless_stopped
+
+volumes:
+  postgres_data:
