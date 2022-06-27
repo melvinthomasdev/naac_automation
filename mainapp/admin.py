@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
-from .models import User
+from .models import User, Institution, Criterion, Indicator
 
 
 class UserResource(resources.ModelResource):
@@ -50,3 +50,7 @@ class UserAdmin(DjangoUserAdmin, ImportExportModelAdmin):
 
 
 # admin.site.register(Profile, ProfileAdmin)
+
+admin.site.register(Institution)
+admin.site.register(Criterion)
+admin.site.register(Indicator)
