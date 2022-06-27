@@ -4,12 +4,14 @@ services:
   db:
     container_name: naac_dev_db
     image: postgres
-    volumes:
-      - postgres_data:/var/lib/postgresql/naac_dev_data/
     environment:
       - POSTGRES_USER=postgres
-      - POTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=naac_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data_dev/
   
   web:
     container_name: naac_dev_web
@@ -25,7 +27,7 @@ services:
       - db
     env_file:
       - .env
-    restart: unless_stopped
+    restart: unless-stopped
 
 volumes:
   postgres_data:
