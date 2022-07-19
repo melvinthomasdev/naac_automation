@@ -3,6 +3,7 @@ backports.zoneinfo==0.2.1
 defusedxml==0.7.1
 diff-match-patch==20200713
 Django==4.0.4
+django-cors-headers==3.13.0
 django-import-export==2.8.0
 django-restframework==0.0.1
 djangorestframework==3.13.1
