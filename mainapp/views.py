@@ -8,8 +8,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 
 
-from .models import User
-from .serializers import UserLoginSerializer, UserSerializer
+from .models import User, Document
+from .serializers import UserLoginSerializer, UserSerializer, ListDocumentSerializer
 
 
 @api_view(["POST", ])
@@ -117,7 +117,20 @@ def whoami(request):
         status=status.HTTP_200_OK
     )
 
-# class DocumentView(APIView):
-#
-#     def get(self):
-#         pass
+
+@api_view(["GET", ])
+@permission_classes([IsAuthenticated, ])
+def list_documents_view(request):
+    data = []
+    user = request.user
+    documents = Document.objects.filter(user=user)
+    for document in documents:
+        data.append(document.id)
+    return Response(
+        {
+            "user_id": user.id,
+            "documents": data
+        },
+        status=status.HTTP_200_OK
+    )
+

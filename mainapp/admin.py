@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
-from .models import User, Institution, Criterion, Indicator
+from .models import User, Institution, Criterion, Indicator, Document
 
 
 class UserResource(resources.ModelResource):
@@ -15,13 +15,14 @@ class UserResource(resources.ModelResource):
     class Meta:
         model = User
 
+
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin, ImportExportModelAdmin):
     """Define admin model for custom User model with no email field."""
     resource_class = UserResource
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'designation', 'department', 'institution')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
                                        'groups', 'user_permissions')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
@@ -54,3 +55,4 @@ class UserAdmin(DjangoUserAdmin, ImportExportModelAdmin):
 admin.site.register(Institution)
 admin.site.register(Criterion)
 admin.site.register(Indicator)
+admin.site.register(Document)

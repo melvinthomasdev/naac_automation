@@ -106,3 +106,13 @@ class Indicator(UUIDModel):
 
     def __str__(self):
         return f"{self.criterion.name}-{self.name}-({self.id})"
+
+
+class Document(TimestampedUUIDModel):
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    indicator = models.ForeignKey(to=Indicator, on_delete=models.CASCADE)
+    content = models.JSONField(blank=False, null=False)
+
+    def __str__(self):
+        return f"{self.user.email}-{self.indicator.name}"
+

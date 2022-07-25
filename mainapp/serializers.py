@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate
 
 from rest_framework import serializers
 
-from .models import User
+from .models import User, Criterion, Indicator, Document
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -68,6 +68,34 @@ class UserLoginSerializer(serializers.Serializer):
             raise serializers.ValidationError(msg, code='authorization')
         attrs['user'] = user
         return attrs
+
+
+class CriterionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Criterion
+        fields = ['id', 'number', 'name', 'description']
+
+
+class IndicatorSerializer(serializers.ModelSerializer):
+    criterion = CriterionSerializer()
+
+    class Meta:
+        model = Indicator
+        fields = ['criterion', 'name', 'description']
+
+
+class DocumentSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    indicator = IndicatorSerializer()
+
+    class Meta:
+        model = Document
+        fields = ['user', 'indicator', 'content']
+
+
+class ListDocumentSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
 
 
 # class ProfileSerializer(serializers.ModelSerializer):
