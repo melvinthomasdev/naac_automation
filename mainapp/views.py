@@ -125,7 +125,11 @@ def list_documents_view(request):
     user = request.user
     documents = Document.objects.filter(user=user)
     for document in documents:
-        data.append(document.id)
+        data.append({
+            "id": document.id,
+            "indicator":document.indicator.id,
+            "criteria": document.indicator.criterion.id
+        })
     return Response(
         {
             "user_id": user.id,
@@ -134,3 +138,7 @@ def list_documents_view(request):
         status=status.HTTP_200_OK
     )
 
+
+class DocumentView(APIView):
+
+    permission_classes = [IsAuthenticated]
