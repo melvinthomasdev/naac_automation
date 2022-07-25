@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.views import APIView
+
 
 from .models import User
 from .serializers import UserLoginSerializer, UserSerializer
@@ -82,3 +84,40 @@ def login_view(request):
 #             profile = Profile.objects.get(user=user)
 #         except ObjectDoesNotExist:
 #             return Response({"message": "user profile doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET', ])
+@permission_classes([IsAuthenticated, ])
+def whoami(request):
+    # try:
+    #     token = Token.objects.get(key=key)
+    #     user = token.user
+    # except Token.DoesNotExist:
+    #     return Response(
+    #         {
+    #             "message": "Invalid Token"
+    #         },
+    #         status=status.HTTP_404_NOT_FOUND
+    #     )
+    # except User.DoesNotExist:
+    #     return Response(
+    #         {
+    #             "message": "User not found"
+    #         },
+    #         status=status.HTTP_404_NOT_FOUND
+    #     )
+    user = request.user
+
+    return Response(
+        {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email
+        },
+        status=status.HTTP_200_OK
+    )
+
+# class DocumentView(APIView):
+#
+#     def get(self):
+#         pass
