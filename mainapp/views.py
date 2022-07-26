@@ -225,6 +225,35 @@ def list_documents_view(request):
         status=status.HTTP_200_OK
     )
 
+@api_view(["GET", ])
+@permission_classes([IsAuthenticated, ])
+def get_document_by_indicator_view(request, indicator_id):
+    data = []
+    user = request.user
+    try:
+        indicator = Indicator.objects.get(id=indicator_id)
+    except ObjectDoesNotExist:
+        return Response(
+            {
+                "message":"Cirresponfing Indicaotr not found!"
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    documents = Document.objects.filter(user=user, indicator=indicator)
+    for document in documents:
+        data.append({
+            "id": document.id,
+            "indicator": document.indicator.id,
+            "criteria": document.indicator.criterion.id
+        })
+    return Response(
+        {
+            "user_id": user.id,
+            "documents": data
+        },
+        status=status.HTTP_200_OK
+    )
 
 class DocumentView(APIView):
     permission_classes = [IsAuthenticated]
