@@ -77,12 +77,16 @@ class CriterionSerializer(serializers.ModelSerializer):
         fields = ['id', 'number', 'name', 'description']
 
 
+# class ListCriterionSerializer(serializers.Serializer):
+#     id = serializers.UUIDField()
+
 class IndicatorSerializer(serializers.ModelSerializer):
-    criterion = CriterionSerializer()
+    # criterion = ListCriterionSerializer()
 
     class Meta:
         model = Indicator
-        fields = ['criterion', 'name', 'description']
+        fields = [ 'id', 'name', 'description']
+
 
 
 class DocumentSerializer(serializers.ModelSerializer):

@@ -8,8 +8,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 
 
-from .models import User, Document
-from .serializers import UserLoginSerializer, UserSerializer, ListDocumentSerializer
+from .models import User, Criterion,  Indicator, Document
+from .serializers import UserLoginSerializer, UserSerializer, ListDocumentSerializer, CriterionSerializer, IndicatorSerializer
 
 
 @api_view(["POST", ])
@@ -120,6 +120,73 @@ def whoami(request):
 
 @api_view(["GET", ])
 @permission_classes([IsAuthenticated, ])
+def list_criteria_view(request):
+    criteria = Criterion.objects.all()
+    serializer = CriterionSerializer(criteria, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET", ])
+@permission_classes([IsAuthenticated, ])
+def get_criteria_view(request, id):
+    try:
+        criterion = Criterion.objects.get(id=id)
+    except ObjectDoesNotExist:
+        return Response(
+            {
+                "message": "Invalid Criterion ID"
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
+    serializer = CriterionSerializer(criterion)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+    # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET", ])
+@permission_classes([IsAuthenticated, ])
+def list_indicator_view(request, criterion_id):
+    data = []
+    try:
+        criterion = Criterion.objects.get(id=criterion_id)
+    except ObjectDoesNotExist:
+        return Response(
+            {
+                "message":"Invalid Criterion ID"
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
+    indicators = Indicator.objects.filter(criterion=criterion)
+    serializer = IndicatorSerializer(indicators, many=True)
+    # for indicator in indicators:
+    #     data.append(
+    #         {
+    #             "criterion_id": indicator.criterion.id,
+    #             "indicator_id"
+    #         }
+    #     )
+
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET", ])
+@permission_classes([IsAuthenticated, ])
+def get_indicator_view(request, id):
+    try:
+        indicator = Indicator.objects.get(id=id)
+    except ObjectDoesNotExist:
+        return Response(
+            {
+                "message": "Invalid Indicator ID"
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
+    serializer = IndicatorSerializer(indicator)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET", ])
+@permission_classes([IsAuthenticated, ])
 def list_documents_view(request):
     data = []
     user = request.user
@@ -139,6 +206,6 @@ def list_documents_view(request):
     )
 
 
-class DocumentView(APIView):
-
-    permission_classes = [IsAuthenticated]
+# class DocumentView(APIView):
+#
+#     permission_classes = [IsAuthenticated]
