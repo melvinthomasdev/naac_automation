@@ -11,6 +11,7 @@ from rest_framework.views import APIView
 from .models import User, Criterion,  Indicator, Document
 from .serializers import UserLoginSerializer, UserSerializer, DocumentSerializer, CriterionSerializer,\
     IndicatorSerializer, UpdateUserSerializer
+from .img_utils import enhance_image, is_blur
 
 
 @api_view(["POST", ])
@@ -235,7 +236,7 @@ def get_document_by_indicator_view(request, indicator_id):
     except ObjectDoesNotExist:
         return Response(
             {
-                "message":"Cirresponfing Indicaotr not found!"
+                "message":"corresponding Indicator not found!"
             },
             status=status.HTTP_404_NOT_FOUND
         )
@@ -254,6 +255,7 @@ def get_document_by_indicator_view(request, indicator_id):
         },
         status=status.HTTP_200_OK
     )
+
 
 class DocumentView(APIView):
     permission_classes = [IsAuthenticated]
@@ -304,6 +306,27 @@ def create_document_view(request):
             "message": "Document Updated",
             "document_id": document.id,
             "indicator_id": document.indicator.id,
+        },
+        status=status.HTTP_200_OK
+    )
+
+
+@api_view(["POST", ])
+@permission_classes([IsAuthenticated, ])
+def image_validation(request):
+    image = request.POST.get(image)
+    if is_blur(image):
+        return Response(
+            {
+                "message": "Image is blurry. Please reupload"
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    enhanced_img = enhance_image(image)
+    return Response(
+        {
+            "message": "Image enhancement complete",
+            "image": image
         },
         status=status.HTTP_200_OK
     )

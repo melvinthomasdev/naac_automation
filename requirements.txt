@@ -9,7 +9,9 @@ django-restframework==0.0.1
 djangorestframework==3.13.1
 et-xmlfile==1.1.0
 MarkupPy==1.14
+numpy==1.23.1
 odfpy==1.4.1
+opencv-python==4.6.0.66
 openpyxl==3.0.10
 Pillow==9.1.1
 psycopg2-binary==2.9.3

@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import create_user_view, login_view, whoami, list_documents_view, list_criteria_view, get_criteria_view,\
     list_indicator_view, get_indicator_view, DocumentView, create_document_view, complete_profile_view, \
-    get_document_by_indicator_view
+    get_document_by_indicator_view, image_validation_view
 
 urlpatterns = [
     path('login/', login_view, name='login'),
@@ -18,4 +18,5 @@ urlpatterns = [
     path('documents/', list_documents_view, name='list-documents'),
     path('documents/<str:id>/', DocumentView.as_view(), name='list-documents'),
     path('document/create/', create_document_view, name='create-document'),
+    path("validate-image/", image_validation_view, name="validate-image"),
 ]
