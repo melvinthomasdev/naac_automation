@@ -112,7 +112,12 @@ def whoami(request):
         {
             "id": user.id,
             "username": user.username,
-            "email": user.email
+            "email": user.email,
+            "first name": user.first_name,
+            "last name": user.last_name,
+            "designation": user.designation,
+            "department": user.department,
+            "college": user.college
         },
         status=status.HTTP_200_OK
     )
