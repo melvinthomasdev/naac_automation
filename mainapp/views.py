@@ -9,7 +9,8 @@ from rest_framework.views import APIView
 
 
 from .models import User, Criterion,  Indicator, Document
-from .serializers import UserLoginSerializer, UserSerializer, DocumentSerializer, CriterionSerializer, IndicatorSerializer
+from .serializers import UserLoginSerializer, UserSerializer, DocumentSerializer, CriterionSerializer,\
+    IndicatorSerializer, UpdateUserSerializer
 
 
 @api_view(["POST", ])
@@ -86,6 +87,20 @@ def login_view(request):
 #             return Response({"message": "user profile doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
 
 
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, ])
+def complete_profile_view(request):
+    data = request.data
+    user = request.user
+    serializer = UpdateUserSerializer(user, data=data, partial=True)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(['GET', ])
 @permission_classes([IsAuthenticated, ])
 def whoami(request):
@@ -111,13 +126,13 @@ def whoami(request):
     return Response(
         {
             "id": user.id,
-            "username": user.username,
+            # "username": user.username,
             "email": user.email,
             "first name": user.first_name,
             "last name": user.last_name,
             "designation": user.designation,
             "department": user.department,
-            "college": user.college
+            "college": user.institution
         },
         status=status.HTTP_200_OK
     )
