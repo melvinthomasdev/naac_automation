@@ -313,7 +313,7 @@ def create_document_view(request):
 
 @api_view(["POST", ])
 @permission_classes([IsAuthenticated, ])
-def image_validation(request):
+def image_validation_view(request):
     image = request.POST.get(image)
     if is_blur(image):
         return Response(
