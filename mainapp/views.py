@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 
 
 from .models import User, Criterion,  Indicator, Document
-from .serializers import UserLoginSerializer, UserSerializer, ListDocumentSerializer, CriterionSerializer, IndicatorSerializer
+from .serializers import UserLoginSerializer, UserSerializer, DocumentSerializer, CriterionSerializer, IndicatorSerializer
 
 
 @api_view(["POST", ])
@@ -194,7 +194,7 @@ def list_documents_view(request):
     for document in documents:
         data.append({
             "id": document.id,
-            "indicator":document.indicator.id,
+            "indicator": document.indicator.id,
             "criteria": document.indicator.criterion.id
         })
     return Response(
@@ -206,6 +206,55 @@ def list_documents_view(request):
     )
 
 
-# class DocumentView(APIView):
-#
-#     permission_classes = [IsAuthenticated]
+class DocumentView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id):
+        try:
+            document = Document.objects.get(id=id)
+        except ObjectDoesNotExist:
+            return Response(
+                {
+                    "message": "Document not found"
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+        serializer = DocumentSerializer(document)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["POST", ])
+@permission_classes([IsAuthenticated, ])
+def create_document_view(request):
+    content = request.POST.get("content")
+    indicator_id = request.POST.get("indicator_id")
+    try:
+        indicator = Indicator.objects.get(id=indicator_id)
+    except ObjectDoesNotExist:
+        return Response(
+            {
+                "message": "Indicator Not Found"
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
+    document, created = Document.objects.get_or_create(user=request.user, indicator=indicator)
+    print(created)
+    document.content = content
+    document.save()
+    if created:
+        return Response(
+            {
+                "message": "Document Created",
+                "document_id": document.id,
+                "indicator_id": document.indicator.id,
+            },
+            status=status.HTTP_201_CREATED
+        )
+    return Response(
+        {
+            "message": "Document Updated",
+            "document_id": document.id,
+            "indicator_id": document.indicator.id,
+        },
+        status=status.HTTP_200_OK
+    )
