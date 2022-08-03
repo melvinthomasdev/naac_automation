@@ -315,7 +315,8 @@ def create_document_view(request):
 @api_view(["POST", ])
 @permission_classes([IsAuthenticated, ])
 def image_validation_view(request):
-    image = request.POST.get('image') #enth njan alla melvin
+    image = request.data.get('image') #enth njan alla melvin
+    print(request.data)
     print(image)
     print(type(image))
     if is_blur(image):
