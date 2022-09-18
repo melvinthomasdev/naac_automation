@@ -316,6 +316,13 @@ def create_document_view(request):
 @permission_classes([IsAuthenticated, ])
 def image_validation_view(request):
     image = request.data.get('image') #enth njan alla melvin
+    if not image:
+        return Response(
+            {
+                "message": "body should contain image"
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
     print(request.data)
     print(image)
     print(type(image))
