@@ -278,8 +278,9 @@ class DocumentView(APIView):
 @api_view(["POST", ])
 @permission_classes([IsAuthenticated, ])
 def create_document_view(request):
-    content = request.POST.get("content")
-    indicator_id = request.POST.get("indicator_id")
+    content = request.data.get("content")
+    indicator_id = request.data.get("indicator_id")
+    print(indicator_id)
     try:
         indicator = Indicator.objects.get(id=indicator_id)
     except ObjectDoesNotExist:
@@ -290,6 +291,7 @@ def create_document_view(request):
             status=status.HTTP_404_NOT_FOUND
         )
     document, created = Document.objects.get_or_create(user=request.user, indicator=indicator)
+    print("@@@@@@@@@@@")
     print(created)
     document.content = content
     document.save()
